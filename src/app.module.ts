@@ -1,4 +1,4 @@
-import { HttpModule, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER } from '@nestjs/core';
 import { KeycloakConnectModule } from 'nest-keycloak-connect';
@@ -9,6 +9,7 @@ import { JoiValidationExceptionFilter } from './filters/joi.validation-exception
 import { ExceptionFilter } from './filters/rpc-exception.filter';
 import { ValidationExceptionFilter } from './filters/validation-exception.filter';
 import configuration from './config/configuration';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
@@ -36,10 +37,10 @@ import configuration from './config/configuration';
       provide: APP_FILTER,
       useClass: ExceptionFilter,
     },
-    {
-      provide: APP_FILTER,
-      useClass: ValidationExceptionFilter,
-    },
+    // {
+    //   provide: APP_FILTER,
+    //   useClass: ValidationExceptionFilter,
+    // },
     {
       provide: APP_FILTER,
       useClass: JoiValidationExceptionFilter,

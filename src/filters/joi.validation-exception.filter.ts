@@ -16,6 +16,6 @@ export class JoiValidationExceptionFilter
       details: error?.details,
     };
 
-    return throwError(JSON.stringify(response));
+    return throwError(() => JSON.stringify(response));
   }
 }

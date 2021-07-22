@@ -1,8 +1,12 @@
-import { HttpService, Injectable, UnauthorizedException } from '@nestjs/common';
-import * as qs from 'qs';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Users } from 'src/schemas/users.schema';
 import { UsersCreateDto } from 'src/dto/users.create.dto';
+import { HttpService } from '@nestjs/axios';
+import { Observable, catchError, map } from 'rxjs';
+import { AxiosResponse } from 'axios';
+import { Headers } from 'src/types/headers.types';
+import { UnauthorizedException } from 'src/app.exceptions';
 
 @Injectable()
 export class UsersService {
@@ -17,12 +21,23 @@ export class UsersService {
   url = `${this.baseUrl}/admin/realms/${this.realm}/users`;
 
   headers = {
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    headers: {},
   };
 
-  async create({ firstName, lastName, email }: UsersCreateDto): Promise<Users> {
-    let response: { data: Users };
-    const payload = qs.stringify({
+  create(
+    userDto: UsersCreateDto,
+    headers: Headers,
+  ): Observable<AxiosResponse<Users>> {
+    const {
+      firstName,
+      lastName,
+      email,
+      passwordCurrent,
+      repeatPasswordCurrent,
+      deviceToken,
+    } = userDto;
+
+    const payload = {
       username: email,
       firstName,
       lastName,
@@ -30,17 +45,15 @@ export class UsersService {
       groups: ['/User'],
       emailVerified: false,
       enabled: true,
-    });
-    console.log(payload);
-    try {
-      response = await this.httpService
-        .post(this.url, payload, this.headers)
-        .toPromise();
-    } catch (e) {
-      console.log(e.response);
-      throw new UnauthorizedException();
-    }
+    };
 
-    return response.data;
+    this.headers.headers['Authorization'] = headers.authorization;
+
+    return this.httpService.post(this.url, payload, this.headers).pipe(
+      map((res) => res.data),
+      catchError((e) => {
+        throw new UnauthorizedException(e.response.data);
+      }),
+    );
   }
 }

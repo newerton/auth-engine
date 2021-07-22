@@ -22,11 +22,12 @@ export class NotFoundException extends AppException {
 }
 
 export class UnauthorizedException extends AppException {
-  constructor() {
+  constructor(message: Array<string>) {
     super({
       statusCode: HttpStatus.UNAUTHORIZED,
       error: 'Unauthorized',
       message: 'Dados inválido.',
+      details: [message],
     });
   }
 }

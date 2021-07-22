@@ -10,6 +10,6 @@ export class ExceptionFilter implements RpcExceptionFilter<AppException> {
       ...error,
       details: [{ filter: ExceptionFilter.name, ...exception }],
     };
-    return throwError(JSON.stringify(json));
+    return throwError(() => JSON.stringify(json));
   }
 }

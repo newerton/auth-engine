@@ -17,6 +17,6 @@ export class ValidationExceptionFilter implements RpcExceptionFilter {
       ],
     };
 
-    return throwError(JSON.stringify(error));
+    return throwError(() => JSON.stringify(error));
   }
 }

@@ -9,18 +9,10 @@ async function bootstrap() {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
     AppModule,
     {
-      transport: Transport.KAFKA,
-      options: {
-        client: {
-          brokers: ['host.docker.internal:9094'],
-        },
-        consumer: {
-          groupId: 'auth-consumer',
-          allowAutoTopicCreation: true,
-        },
-      },
+      transport: Transport.TCP,
     },
   );
-  await app.listen(() => logger.log('auth-engine is running'));
+  await app.listen();
+  logger.log('auth-engine is running');
 }
 bootstrap();

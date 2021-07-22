@@ -1,9 +1,12 @@
-import { HttpService, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import * as qs from 'qs';
 import { ConfigService } from '@nestjs/config';
 import { LoginDto } from 'src/dto/login.dto';
 import { Auth } from 'src/schemas/auth.schema';
 import { UnauthorizedException } from 'src/app.exceptions';
+import { Observable, map, catchError } from 'rxjs';
+import { AxiosResponse } from 'axios';
+import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class AppService {
@@ -21,8 +24,7 @@ export class AppService {
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
   };
 
-  async login({ email, password }: LoginDto): Promise<Auth> {
-    let response: { data: Auth };
+  login({ email, password }: LoginDto): Observable<AxiosResponse<Auth>> {
     const payload = qs.stringify({
       grant_type: 'password',
       client_id: this.configService.get<string>('keycloak.clientId'),
@@ -31,20 +33,15 @@ export class AppService {
       username: email,
       password: password,
     });
-    try {
-      response = await this.httpService
-        .post(this.url, payload, this.headers)
-        .toPromise();
-    } catch (e) {
-      throw new UnauthorizedException();
-    }
-
-    return response.data;
+    return this.httpService.post(this.url, payload, this.headers).pipe(
+      map((res) => res.data),
+      catchError((e) => {
+        throw new UnauthorizedException(e.response.data);
+      }),
+    );
   }
 
-  async credentials(): Promise<Auth> {
-    console.log(this.url);
-    let response: { data: Auth };
+  credentials(): Observable<AxiosResponse<Auth>> {
     const payload = qs.stringify({
       client_id: this.configService.get<string>(
         'keycloak.user_credentials.clientId',
@@ -57,14 +54,11 @@ export class AppService {
       ),
     });
 
-    try {
-      response = await this.httpService
-        .post(this.url, payload, this.headers)
-        .toPromise();
-    } catch (e) {
-      throw new UnauthorizedException();
-    }
-
-    return response.data;
+    return this.httpService.post(this.url, payload, this.headers).pipe(
+      map((res) => res.data),
+      catchError((e) => {
+        throw new UnauthorizedException(e.response.data);
+      }),
+    );
   }
 }
