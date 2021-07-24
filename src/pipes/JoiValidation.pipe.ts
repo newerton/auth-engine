@@ -1,6 +1,6 @@
 import * as JoiBase from 'joi';
 import { PipeTransform, Injectable } from '@nestjs/common';
-import { CreateSchema } from '../schemas/Joi.create.schema.factory';
+import { CreateSchema } from '../schemas/joi.create.schema.factory';
 import { JoiValidationException } from 'src/app.exceptions';
 
 @Injectable()

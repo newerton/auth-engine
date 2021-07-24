@@ -17,6 +17,7 @@ export class NotFoundException extends AppException {
       statusCode: HttpStatus.NOT_FOUND,
       error: 'Not Found',
       message: 'Dados inválido.',
+      details: [],
     });
   }
 }
@@ -32,11 +33,20 @@ export class UnauthorizedException extends AppException {
   }
 }
 
+export class ConflictException extends AppException {
+  constructor(message: Array<string>) {
+    super({
+      statusCode: HttpStatus.CONFLICT,
+      error: 'Conflict',
+      message: message,
+      details: [],
+    });
+  }
+}
+
 export class JoiValidationException extends AppException {
   constructor(err: ValidationType) {
     super({
-      statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-      error: 'Unprocessable Entity',
       ...err,
     });
   }

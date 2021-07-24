@@ -12,8 +12,8 @@ export class LoginSchema implements CreateSchema {
         .lowercase()
         .label('E-mail')
         .error((errors: any) => {
-          errors.forEach((err: JoiBase.ErrorReport) => {
-            console.log('err.code', err);
+          errors.forEach((err: any) => {
+            console.log('Validation', err.code, err.local as any);
           });
           return errors;
         })
@@ -24,8 +24,8 @@ export class LoginSchema implements CreateSchema {
         .required()
         .label('Senha')
         .error((errors: any) => {
-          errors.forEach((err: JoiBase.ErrorReport) => {
-            console.log('err.code', err);
+          errors.forEach((err: any) => {
+            console.log('Validation', err.code, err.local as any);
           });
           return errors;
         })

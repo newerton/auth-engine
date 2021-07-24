@@ -35,5 +35,9 @@ lerna-debug.log*
 
 # Plugins - VSCode
 /.history
-.env
+
+# Lock files
 yarn.lock
+
+# Env
+.env

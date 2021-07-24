@@ -29,7 +29,7 @@ export class AppService {
       grant_type: 'password',
       client_id: this.configService.get<string>('keycloak.clientId'),
       client_secret: this.configService.get<string>('keycloak.secret'),
-      scope: 'openid email profile',
+      scope: 'openid address',
       username: email,
       password: password,
     });
