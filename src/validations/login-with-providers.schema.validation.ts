@@ -4,13 +4,12 @@ import MessagesSchema from 'src/schemas/joi.messages.schema';
 
 const Joi = JoiBase;
 
-export class LoginSchema implements CreateSchema {
+export class LoginWithProvidersSchema implements CreateSchema {
   createSchema(): JoiBase.ObjectSchema {
     return Joi.object({
-      email: Joi.string()
-        .email()
-        .lowercase()
-        .label('E-mail')
+      accessToken: Joi.string()
+        .required()
+        .label('Access Token')
         .error((errors: any) => {
           errors.forEach((err: any) => {
             console.log('Validation', err.code, err.local as any);
@@ -18,11 +17,8 @@ export class LoginSchema implements CreateSchema {
           return errors;
         })
         .messages(MessagesSchema),
-      password: Joi.string()
-        .min(6)
-        .max(30)
-        .required()
-        .label('Senha')
+      idToken: Joi.string()
+        .label('ID Token')
         .error((errors: any) => {
           errors.forEach((err: any) => {
             console.log('Validation', err.code, err.local as any);

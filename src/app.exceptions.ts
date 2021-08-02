@@ -11,6 +11,17 @@ export class AppException extends RpcException {}
 /**
  * Doc: https://cloud.google.com/apis/design/errors#handling_errors
  */
+export class BadRequestException extends AppException {
+  constructor(message: { [key: string]: string }) {
+    super({
+      statusCode: HttpStatus.BAD_REQUEST,
+      error: 'Bad Request',
+      message: 'Bad Request',
+      details: [message],
+    });
+  }
+}
+
 export class NotFoundException extends AppException {
   constructor() {
     super({
@@ -23,7 +34,7 @@ export class NotFoundException extends AppException {
 }
 
 export class UnauthorizedException extends AppException {
-  constructor(message: Array<string>) {
+  constructor(message: { [key: string]: string }) {
     super({
       statusCode: HttpStatus.UNAUTHORIZED,
       error: 'Unauthorized',

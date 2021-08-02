@@ -9,6 +9,14 @@ import { ValidationExceptionFilter } from './filters/validation-exception.filter
 import configuration from './config/configuration';
 import { HttpModule } from '@nestjs/axios';
 import { AppService } from './app.service';
+import { CredentialsService } from './services/credentials.service';
+import { LoginService } from './services/login.service';
+import { LoginWithFacebookService } from './services/login-with-facebook.service';
+import { FacebookProvider } from './providers/Facebook/provider/facebook.provider';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+import { AdminUserUpdateService } from './services/admin/users/user-update.service';
+import { AdminUserCreateProviderService } from './services/admin/users/user-create-provider.service';
+import { TokenExchangeService } from './services/token-exchange.service';
 
 @Module({
   imports: [
@@ -17,6 +25,16 @@ import { AppService } from './app.service';
       isGlobal: true,
       load: [configuration],
     }),
+    ClientsModule.register([
+      {
+        name: 'USER_SERVICE',
+        transport: Transport.TCP,
+        options: {
+          host: 'localhost',
+          port: 3002,
+        },
+      },
+    ]),
     KeycloakConnectModule.registerAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
@@ -31,6 +49,13 @@ import { AppService } from './app.service';
   controllers: [AppController],
   providers: [
     AppService,
+    AdminUserUpdateService,
+    AdminUserCreateProviderService,
+    CredentialsService,
+    LoginService,
+    LoginWithFacebookService,
+    FacebookProvider,
+    TokenExchangeService,
     {
       provide: APP_FILTER,
       useClass: AppExceptionFilter,

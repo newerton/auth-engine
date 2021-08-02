@@ -3,25 +3,33 @@ import { MessagePattern, Payload } from '@nestjs/microservices';
 import { LoginDto } from './dto/login.dto';
 import { Auth } from './schemas/auth.schema';
 import { LoginSchema } from './validations/login.schema.validation';
-import { Observable } from 'rxjs';
-import { AxiosResponse } from 'axios';
 import { JoiValidationPipe } from './pipes/JoiValidation.pipe';
 import { AppService } from './app.service';
+import { LoginWithProvidersDto } from './dto/login-with-providers.dto';
+import { LoginWithProvidersSchema } from './validations/login-with-providers.schema.validation';
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @MessagePattern('auth.login')
-  login(
-    @Payload(new JoiValidationPipe(new LoginSchema()))
-    { email, password }: LoginDto,
-  ): Observable<AxiosResponse<Auth>> {
-    return this.appService.login({ email, password });
+  @MessagePattern('auth.credentials')
+  async credentials(): Promise<Auth> {
+    return await this.appService.credentials();
   }
 
-  @MessagePattern('auth.credentials')
-  credentials(): Observable<AxiosResponse<Auth>> {
-    return this.appService.credentials();
+  @MessagePattern('auth.login')
+  async login(
+    @Payload(new JoiValidationPipe(new LoginSchema()))
+    { email, password }: LoginDto,
+  ): Promise<Auth> {
+    return await this.appService.login({ email, password });
+  }
+
+  @MessagePattern('auth.login.facebook')
+  async loginWithFacebook(
+    @Payload(new JoiValidationPipe(new LoginWithProvidersSchema()))
+    payload: LoginWithProvidersDto,
+  ): Promise<Auth> {
+    return await this.appService.loginWithFacebook(payload);
   }
 }

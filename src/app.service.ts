@@ -1,64 +1,31 @@
 import { Injectable } from '@nestjs/common';
-import * as qs from 'qs';
-import { ConfigService } from '@nestjs/config';
 import { LoginDto } from 'src/dto/login.dto';
 import { Auth } from 'src/schemas/auth.schema';
-import { UnauthorizedException } from 'src/app.exceptions';
-import { Observable, map, catchError } from 'rxjs';
-import { AxiosResponse } from 'axios';
-import { HttpService } from '@nestjs/axios';
+import { LoginWithProvidersDto } from './dto/login-with-providers.dto';
+import { CredentialsService } from './services/credentials.service';
+import { LoginService } from './services/login.service';
+import { LoginWithFacebookService } from './services/login-with-facebook.service';
 
 @Injectable()
 export class AppService {
   constructor(
-    private httpService: HttpService,
-    private configService: ConfigService,
+    private credentialsService: CredentialsService,
+    private loginService: LoginService,
+    private loginWithFacebookService: LoginWithFacebookService,
   ) {}
 
-  baseUrl = this.configService.get<string>('keycloak.baseUrl');
-  realm = this.configService.get<string>('keycloak.realm');
-
-  url = `${this.baseUrl}/realms/${this.realm}/protocol/openid-connect/token`;
-
-  headers = {
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-  };
-
-  login({ email, password }: LoginDto): Observable<AxiosResponse<Auth>> {
-    const payload = qs.stringify({
-      grant_type: 'password',
-      client_id: this.configService.get<string>('keycloak.clientId'),
-      client_secret: this.configService.get<string>('keycloak.secret'),
-      scope: 'openid address',
-      username: email,
-      password: password,
-    });
-    return this.httpService.post(this.url, payload, this.headers).pipe(
-      map((res) => res.data),
-      catchError((e) => {
-        throw new UnauthorizedException(e.response.data);
-      }),
-    );
+  async credentials(): Promise<Auth> {
+    return await this.credentialsService.execute();
   }
 
-  credentials(): Observable<AxiosResponse<Auth>> {
-    const payload = qs.stringify({
-      client_id: this.configService.get<string>(
-        'keycloak.user_credentials.clientId',
-      ),
-      client_secret: this.configService.get<string>(
-        'keycloak.user_credentials.secret',
-      ),
-      grant_type: this.configService.get<string>(
-        'keycloak.user_credentials.grant_type',
-      ),
-    });
+  async login({ email, password }: LoginDto): Promise<Auth> {
+    return await this.loginService.execute({ email, password });
+  }
 
-    return this.httpService.post(this.url, payload, this.headers).pipe(
-      map((res) => res.data),
-      catchError((e) => {
-        throw new UnauthorizedException(e.response.data);
-      }),
-    );
+  async loginWithFacebook({
+    accessToken,
+    deviceToken,
+  }: LoginWithProvidersDto): Promise<Auth> {
+    return this.loginWithFacebookService.execute({ accessToken, deviceToken });
   }
 }
