@@ -35,7 +35,7 @@ export class AdminUserUpdateService {
     }
 
     throw new UnauthorizedException({
-      error: '[AdminUserUpdateService] Access token invalid',
+      error: 'Access token invalid',
     });
   }
 }

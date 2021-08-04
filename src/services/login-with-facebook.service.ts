@@ -2,7 +2,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { BadRequestException } from 'src/app.exceptions';
 import { lastValueFrom } from 'rxjs';
-import { HttpService } from '@nestjs/axios';
 import { LoginWithProvidersDto } from 'src/dto/login-with-providers.dto';
 import { FacebookProvider } from 'src/providers/Facebook/provider/facebook.provider';
 import { ClientProxy } from '@nestjs/microservices';
@@ -12,6 +11,7 @@ import { AdminUserUpdateService } from './admin/users/user-update.service';
 import { AdminUserCreateProviderService } from './admin/users/user-create-provider.service';
 import { TokenExchangeService } from './token-exchange.service';
 import { Auth } from 'src/schemas/auth.schema';
+import { CreateUserDto } from 'src/dto/create-user.dto';
 
 @Injectable()
 export class LoginWithFacebookService {
@@ -34,8 +34,10 @@ export class LoginWithFacebookService {
 
   /**
    * https://www.keycloak.org/docs/latest/server_admin/#retrieving-external-idp-tokens
-   * @param param0
-   * @returns
+   *
+   * @param accessToken string
+   * @param deviceToken string
+   * @returns Auth
    */
   async execute({
     accessToken,
@@ -45,93 +47,38 @@ export class LoginWithFacebookService {
 
     if (access_token) {
       const {
-        id: idFacebook,
-        first_name: firstNameFacebook,
-        middle_name: middleNameFacebook,
-        last_name: lastNameFacebook,
-        email: emailFacebook,
+        id: facebookId,
+        first_name: facebookFirstName,
+        middle_name: facebookMiddleName,
+        last_name: facebookLastName,
+        email: facebookEmail,
       } = await this.facebookProvider.me(accessToken);
 
-      const newEmail = emailFacebook || `${idFacebook}@auth.facebook.com`;
+      const newEmail = facebookEmail || `${facebookId}@auth.facebook.com`;
 
-      const { id } = await lastValueFrom(
-        this.client.send<User>('users.find_one', { email: newEmail }),
-      );
+      const user = await this.getUser(newEmail);
 
-      if (id) {
-        const user = await lastValueFrom(
-          this.client.send<User>('users.find_by_id', { id }),
-        );
+      if (user) {
+        return await this.updateUser({
+          user,
+          accessToken,
+          deviceToken,
+          facebookId,
+          email: newEmail,
+        });
+      }
 
-        if (user) {
-          try {
-            user.attributes['device_token'] = [deviceToken];
-            await this.adminUserUpdateService.execute(user);
-
-            const clientAuth = user.federatedIdentities.filter(
-              (provider) => provider.identityProvider === 'facebook',
-            );
-
-            if (clientAuth.length === 0) {
-              await lastValueFrom(
-                this.client.send<User>('users.find_by_id', { id }),
-              );
-              await this.adminUserCreateProviderService.execute({
-                id,
-                identityProvider: 'facebook',
-                userId: idFacebook,
-                userName: newEmail,
-              });
-            }
-
-            return this.tokenExchangeService.execute({
-              issuer: 'facebook',
-              token: accessToken,
-            });
-          } catch (err) {
-            throw new BadRequestException({
-              error: 'Não foi possível criar a autenticação do facebook',
-            });
-          }
-        }
-
-        if (!user) {
-          try {
-            // const hashedPassword = await this.hashProvider.generateHash(
-            //   `${process.env.APP_SECRET}facebook`,
-            // );
-            // const newClient = await this.clientRepository.create({
-            //   name: firstNameFacebook,
-            //   last_name: `${
-            //     middleNameFacebook ? `${middleNameFacebook} ` : ''
-            //   }${lastNameFacebook}`,
-            //   email: newEmail,
-            //   password: hashedPassword,
-            //   visible: true,
-            //   genre: 'u',
-            // });
-            // await this.clientAuthRepository.create({
-            //   client_id: newClient.id,
-            //   source: 'facebook',
-            //   source_id: idFacebook,
-            // });
-            // if (device_token) {
-            //   newClient.device_token = device_token;
-            //   await this.clientRepository.save(newClient);
-            // }
-            // const { secret, expiresIn } = authConfig.jwt;
-            // const token = sign({}, secret, {
-            //   subject: newClient.id,
-            //   expiresIn,
-            // });
-            // return { client: newClient, token };
-          } catch (err) {
-            console.log(err.response.data);
-            throw new BadRequestException({
-              error: 'Não foi possível criar o seu cadastro',
-            });
-          }
-        }
+      if (!user) {
+        return await this.createUser({
+          facebookId,
+          firstName: facebookFirstName,
+          lastName: `${
+            facebookMiddleName ? `${facebookMiddleName} ` : ''
+          }${facebookLastName}`,
+          email: newEmail,
+          deviceToken,
+          accessToken,
+        });
       }
 
       throw new BadRequestException({
@@ -140,7 +87,99 @@ export class LoginWithFacebookService {
     }
 
     throw new BadRequestException({
-      error: '[LoginWithFacebookService] Access token invalid',
+      error: 'Access token invalid',
     });
+  }
+
+  async getUser(email) {
+    try {
+      const { id } = await lastValueFrom(
+        this.client.send<User>('users.find_one', { email }),
+      );
+      if (id) {
+        const user = await lastValueFrom(
+          this.client.send<User>('users.find_by_id', { id }),
+        );
+        return user;
+      }
+    } catch (err) {
+      return false;
+    }
+  }
+
+  async createUser({
+    facebookId,
+    firstName,
+    lastName,
+    email,
+    deviceToken,
+    accessToken,
+  }) {
+    try {
+      const hash = (Math.random() + 1).toString(36);
+      const payload: CreateUserDto = {
+        firstName,
+        lastName,
+        email,
+        passwordCurrent: hash,
+        repeatPasswordCurrent: hash,
+        emailVerified: true,
+        deviceToken,
+      };
+      await lastValueFrom(
+        this.client.send<User>('users.create', {
+          payload,
+        }),
+      );
+
+      const newUser = await this.getUser(email);
+      if (newUser) {
+        await this.adminUserCreateProviderService.execute({
+          id: newUser.id,
+          identityProvider: 'facebook',
+          userId: facebookId,
+          userName: email,
+        });
+      }
+
+      return this.tokenExchangeService.execute({
+        issuer: 'facebook',
+        token: accessToken,
+      });
+    } catch (err) {
+      console.log(err);
+      throw new BadRequestException({
+        error: 'Não foi possível criar o seu cadastro',
+      });
+    }
+  }
+
+  async updateUser({ user, accessToken, deviceToken, facebookId, email }) {
+    try {
+      user.attributes['device_token'] = [deviceToken];
+      await this.adminUserUpdateService.execute(user);
+
+      const clientAuth = user.federatedIdentities.filter(
+        (provider) => provider.identityProvider === 'facebook',
+      );
+
+      if (clientAuth.length === 0) {
+        await this.adminUserCreateProviderService.execute({
+          id: user.id,
+          identityProvider: 'facebook',
+          userId: facebookId,
+          userName: email,
+        });
+      }
+
+      return this.tokenExchangeService.execute({
+        issuer: 'facebook',
+        token: accessToken,
+      });
+    } catch (err) {
+      throw new BadRequestException({
+        error: 'Não foi possível criar a autenticação do facebook',
+      });
+    }
   }
 }

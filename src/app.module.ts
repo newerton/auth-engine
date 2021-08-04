@@ -5,7 +5,6 @@ import { KeycloakConnectModule } from 'nest-keycloak-connect';
 import { AppController } from './app.controller';
 import { JoiValidationExceptionFilter } from './filters/joi.validation-exception.filter';
 import { AppExceptionFilter } from './filters/app-exception.filter';
-import { ValidationExceptionFilter } from './filters/validation-exception.filter';
 import configuration from './config/configuration';
 import { HttpModule } from '@nestjs/axios';
 import { AppService } from './app.service';
@@ -17,6 +16,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { AdminUserUpdateService } from './services/admin/users/user-update.service';
 import { AdminUserCreateProviderService } from './services/admin/users/user-create-provider.service';
 import { TokenExchangeService } from './services/token-exchange.service';
+import { AllExceptionFilter } from './filters/all-exception.filter';
 
 @Module({
   imports: [
@@ -60,10 +60,10 @@ import { TokenExchangeService } from './services/token-exchange.service';
       provide: APP_FILTER,
       useClass: AppExceptionFilter,
     },
-    // {
-    //   provide: APP_FILTER,
-    //   useClass: ValidationExceptionFilter,
-    // },
+    {
+      provide: APP_FILTER,
+      useClass: AllExceptionFilter,
+    },
     {
       provide: APP_FILTER,
       useClass: JoiValidationExceptionFilter,

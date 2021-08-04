@@ -42,7 +42,7 @@ export class AdminUserCreateProviderService {
     }
 
     throw new BadRequestException({
-      error: '[AdminUserCreateProviderService] Access token invalid',
+      error: 'Access token invalid',
     });
   }
 }
