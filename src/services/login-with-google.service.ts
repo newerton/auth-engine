@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { BadRequestException } from 'src/app.exceptions';
 import { lastValueFrom } from 'rxjs';
 import { LoginWithProvidersDto } from 'src/dto/login-with-providers.dto';
-import { FacebookProvider } from 'src/providers/Facebook/provider/facebook.provider';
+import { GoogleProvider } from 'src/providers/Google/provider/google.provider';
 import { ClientProxy } from '@nestjs/microservices';
 import { CredentialsService } from './credentials.service';
 import { User } from 'src/types/user.type';
@@ -14,11 +14,11 @@ import { Auth } from 'src/schemas/auth.schema';
 import { CreateUserDto } from 'src/dto/create-user.dto';
 
 @Injectable()
-export class LoginWithFacebookService {
+export class LoginWithGoogleService {
   constructor(
     @Inject('USER_SERVICE') private readonly client: ClientProxy,
     private configService: ConfigService,
-    private facebookProvider: FacebookProvider,
+    private googleProvider: GoogleProvider,
     private credentialService: CredentialsService,
     private adminUserUpdateService: AdminUserUpdateService,
     private adminUserCreateProviderService: AdminUserCreateProviderService,
@@ -47,14 +47,13 @@ export class LoginWithFacebookService {
 
     if (access_token) {
       const {
-        id: facebookId,
-        first_name: facebookFirstName,
-        middle_name: facebookMiddleName,
-        last_name: facebookLastName,
-        email: facebookEmail,
-      } = await this.facebookProvider.me(accessToken);
+        id: googleId,
+        given_name: googleFirstName,
+        family_name: googleLastName,
+        email: googleEmail,
+      } = await this.googleProvider.me(accessToken);
 
-      const newEmail = facebookEmail || `${facebookId}@auth.facebook.com`;
+      const newEmail = googleEmail || `${googleId}@auth.google.com`;
 
       const user = await this.getUser(newEmail);
 
@@ -63,18 +62,16 @@ export class LoginWithFacebookService {
           user,
           accessToken,
           deviceToken,
-          facebookId,
+          googleId,
           email: newEmail,
         });
       }
 
       if (!user) {
         return await this.createUser({
-          facebookId,
-          firstName: facebookFirstName,
-          lastName: `${
-            facebookMiddleName ? `${facebookMiddleName} ` : ''
-          }${facebookLastName}`,
+          googleId,
+          firstName: googleFirstName,
+          lastName: googleLastName,
           email: newEmail,
           deviceToken,
           accessToken,
@@ -82,7 +79,7 @@ export class LoginWithFacebookService {
       }
 
       throw new BadRequestException({
-        error: 'Não foi possível criar a autenticação do facebook',
+        error: 'Não foi possível criar a autenticação do google',
       });
     }
 
@@ -108,7 +105,7 @@ export class LoginWithFacebookService {
   }
 
   async createUser({
-    facebookId,
+    googleId,
     firstName,
     lastName,
     email,
@@ -136,14 +133,14 @@ export class LoginWithFacebookService {
       if (newUser) {
         await this.adminUserCreateProviderService.execute({
           id: newUser.id,
-          identityProvider: 'facebook',
-          userId: facebookId,
+          identityProvider: 'google',
+          userId: googleId,
           userName: email,
         });
       }
 
       return this.tokenExchangeService.execute({
-        issuer: 'facebook',
+        issuer: 'google',
         token: accessToken,
       });
     } catch (err) {
@@ -154,32 +151,30 @@ export class LoginWithFacebookService {
     }
   }
 
-  async updateUser({ user, accessToken, deviceToken, facebookId, email }) {
+  async updateUser({ user, accessToken, deviceToken, googleId, email }) {
     try {
       user.attributes['device_token'] = [deviceToken];
       await this.adminUserUpdateService.execute(user);
 
       const clientAuth = user.federatedIdentities.filter(
-        (provider) => provider.identityProvider === 'facebook',
+        (provider) => provider.identityProvider === 'google',
       );
 
       if (clientAuth.length === 0) {
         await this.adminUserCreateProviderService.execute({
           id: user.id,
-          identityProvider: 'facebook',
-          userId: facebookId,
+          identityProvider: 'google',
+          userId: googleId,
           userName: email,
         });
       }
 
       return this.tokenExchangeService.execute({
-        issuer: 'facebook',
+        issuer: 'google',
         token: accessToken,
       });
     } catch (err) {
-      throw new BadRequestException({
-        error: 'Não foi possível atualizar o seu cadastro',
-      });
+      throw new BadRequestException(err);
     }
   }
 }

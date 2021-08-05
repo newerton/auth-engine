@@ -17,6 +17,8 @@ import { AdminUserUpdateService } from './services/admin/users/user-update.servi
 import { AdminUserCreateProviderService } from './services/admin/users/user-create-provider.service';
 import { TokenExchangeService } from './services/token-exchange.service';
 import { AllExceptionFilter } from './filters/all-exception.filter';
+import { GoogleProvider } from './providers/Google/provider/google.provider';
+import { LoginWithGoogleService } from './services/login-with-google.service';
 
 @Module({
   imports: [
@@ -52,9 +54,11 @@ import { AllExceptionFilter } from './filters/all-exception.filter';
     AdminUserUpdateService,
     AdminUserCreateProviderService,
     CredentialsService,
+    FacebookProvider,
+    GoogleProvider,
     LoginService,
     LoginWithFacebookService,
-    FacebookProvider,
+    LoginWithGoogleService,
     TokenExchangeService,
     {
       provide: APP_FILTER,

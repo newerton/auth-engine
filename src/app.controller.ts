@@ -32,4 +32,12 @@ export class AppController {
   ): Promise<Auth> {
     return await this.appService.loginWithFacebook(payload);
   }
+
+  @MessagePattern('auth.login.google')
+  async loginWithGoogle(
+    @Payload(new JoiValidationPipe(new LoginWithProvidersSchema()))
+    payload: LoginWithProvidersDto,
+  ): Promise<Auth> {
+    return await this.appService.loginWithGoogle(payload);
+  }
 }

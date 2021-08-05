@@ -5,6 +5,7 @@ import { LoginWithProvidersDto } from './dto/login-with-providers.dto';
 import { CredentialsService } from './services/credentials.service';
 import { LoginService } from './services/login.service';
 import { LoginWithFacebookService } from './services/login-with-facebook.service';
+import { LoginWithGoogleService } from './services/login-with-google.service';
 
 @Injectable()
 export class AppService {
@@ -12,6 +13,7 @@ export class AppService {
     private credentialsService: CredentialsService,
     private loginService: LoginService,
     private loginWithFacebookService: LoginWithFacebookService,
+    private loginWithGoogleService: LoginWithGoogleService,
   ) {}
 
   async credentials(): Promise<Auth> {
@@ -27,5 +29,12 @@ export class AppService {
     deviceToken,
   }: LoginWithProvidersDto): Promise<Auth> {
     return this.loginWithFacebookService.execute({ accessToken, deviceToken });
+  }
+
+  async loginWithGoogle({
+    accessToken,
+    deviceToken,
+  }: LoginWithProvidersDto): Promise<Auth> {
+    return this.loginWithGoogleService.execute({ accessToken, deviceToken });
   }
 }
