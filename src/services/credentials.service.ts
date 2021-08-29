@@ -38,7 +38,7 @@ export class CredentialsService {
     )
       .then((res) => res.data)
       .catch((e) => {
-        throw new UnauthorizedException(e.response.data);
+        throw new UnauthorizedException(e.response?.data || e.message);
       });
   }
 }

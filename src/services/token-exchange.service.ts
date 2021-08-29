@@ -43,7 +43,7 @@ export class TokenExchangeService {
         if (errorResponse.status === 409) {
           throw new ConflictException(errorResponse.data.errorMessage);
         }
-        throw new BadRequestException(e.response.data);
+        throw new BadRequestException(e.response?.data || e.message);
       });
   }
 }

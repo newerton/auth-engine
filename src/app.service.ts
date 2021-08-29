@@ -20,21 +20,15 @@ export class AppService {
     return await this.credentialsService.execute();
   }
 
-  async login({ email, password }: LoginDto): Promise<Auth> {
-    return await this.loginService.execute({ email, password });
+  async login(payload: LoginDto): Promise<Auth> {
+    return await this.loginService.execute(payload);
   }
 
-  async loginWithFacebook({
-    accessToken,
-    deviceToken,
-  }: LoginWithProvidersDto): Promise<Auth> {
-    return this.loginWithFacebookService.execute({ accessToken, deviceToken });
+  async loginWithFacebook(payload: LoginWithProvidersDto): Promise<Auth> {
+    return this.loginWithFacebookService.execute(payload);
   }
 
-  async loginWithGoogle({
-    accessToken,
-    deviceToken,
-  }: LoginWithProvidersDto): Promise<Auth> {
-    return this.loginWithGoogleService.execute({ accessToken, deviceToken });
+  async loginWithGoogle(payload: LoginWithProvidersDto): Promise<Auth> {
+    return this.loginWithGoogleService.execute(payload);
   }
 }

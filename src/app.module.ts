@@ -32,7 +32,7 @@ import { LoginWithGoogleService } from './services/login-with-google.service';
         name: 'USER_SERVICE',
         transport: Transport.TCP,
         options: {
-          host: 'localhost',
+          host: 'user-engine',
           port: 3002,
         },
       },

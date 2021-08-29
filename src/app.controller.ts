@@ -20,9 +20,9 @@ export class AppController {
   @MessagePattern('auth.login')
   async login(
     @Payload(new JoiValidationPipe(new LoginSchema()))
-    { email, password }: LoginDto,
+    payload: LoginDto,
   ): Promise<Auth> {
-    return await this.appService.login({ email, password });
+    return await this.appService.login(payload);
   }
 
   @MessagePattern('auth.login.facebook')
