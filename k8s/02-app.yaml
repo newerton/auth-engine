@@ -4,7 +4,6 @@ metadata:
   namespace: nestjs-k8s-namespace
   name: auth-engine
 spec:
-  type: LoadBalancer
   ports:
     - port: 3001
       targetPort: 3001

@@ -1,5 +1,10 @@
 import { Controller } from '@nestjs/common';
-import { MessagePattern, Payload } from '@nestjs/microservices';
+import {
+  EventPattern,
+  MessagePattern,
+  Payload,
+  Transport,
+} from '@nestjs/microservices';
 import { LoginDto } from './dto/login.dto';
 import { Auth } from './schemas/auth.schema';
 import { LoginSchema } from './validations/login.schema.validation';
@@ -39,5 +44,11 @@ export class AppController {
     payload: LoginWithProvidersDto,
   ): Promise<Auth> {
     return await this.appService.loginWithGoogle(payload);
+  }
+
+  @EventPattern('product_created', Transport.KAFKA)
+  async handleProductCreated(data: Record<string, unknown>) {
+    console.log('product_created');
+    console.log(data);
   }
 }

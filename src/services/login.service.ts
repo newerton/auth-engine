@@ -8,7 +8,6 @@ import { lastValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
 import { User } from 'src/types/user.type';
 import { ClientProxy } from '@nestjs/microservices';
-import { AdminUserCreateProviderService } from './admin/users/user-create-provider.service';
 import { AdminUserUpdateService } from './admin/users/user-update.service';
 
 @Injectable()
@@ -36,14 +35,14 @@ export class LoginService {
       username: email,
       password: password,
     });
-    console.log({
-      grant_type: 'password',
-      client_id: this.configService.get<string>('keycloak.clientId'),
-      client_secret: this.configService.get<string>('keycloak.secret'),
-      scope: 'openid address',
-      username: email,
-      password: password,
-    });
+    // console.log({
+    //   grant_type: 'password',
+    //   client_id: this.configService.get<string>('keycloak.clientId'),
+    //   client_secret: this.configService.get<string>('keycloak.secret'),
+    //   scope: 'openid address',
+    //   username: email,
+    //   password: password,
+    // });
     return await lastValueFrom(
       this.httpService.post(this.url, payload, this.options),
     )

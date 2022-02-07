@@ -9,7 +9,7 @@ build:
     - image: newerton/auth-engine
       context: .
       docker:
-        dockerfile: Dockerfile
+        dockerfile: Dockerfile.prod
       sync:
         manual:
           - src: 'src/**/*.*'
