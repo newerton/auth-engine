@@ -14,9 +14,9 @@ export class AdminUserUpdateService {
     private configService: ConfigService,
   ) {}
 
-  baseUrl = this.configService.get<string>('keycloak.baseUrl');
+  baseInternalUrl = this.configService.get<string>('keycloak.baseInternalUrl');
   realm = this.configService.get<string>('keycloak.realm');
-  url = `${this.baseUrl}/admin/realms/${this.realm}/users`;
+  url = `${this.baseInternalUrl}/admin/realms/${this.realm}/users`;
   options = {
     headers: {} as Headers,
   };
