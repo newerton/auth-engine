@@ -17,20 +17,12 @@ import { CreateUserDto } from 'src/dto/create-user.dto';
 export class LoginWithFacebookService {
   constructor(
     @Inject('USER_SERVICE') private readonly client: ClientProxy,
-    private configService: ConfigService,
     private facebookProvider: FacebookProvider,
     private credentialService: CredentialsService,
     private adminUserUpdateService: AdminUserUpdateService,
     private adminUserCreateProviderService: AdminUserCreateProviderService,
     private tokenExchangeService: TokenExchangeService,
   ) {}
-
-  baseUrl = this.configService.get<string>('keycloak.baseUrl');
-  realm = this.configService.get<string>('keycloak.realm');
-  url = `${this.baseUrl}/realms/${this.realm}/protocol/openid-connect/token`;
-  headers = {
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-  };
 
   /**
    * https://www.keycloak.org/docs/latest/server_admin/#retrieving-external-idp-tokens

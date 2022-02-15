@@ -28,6 +28,7 @@
     "@nestjs/platform-express": "^8.2.6",
     "joi": "^17.6.0",
     "kafkajs": "^1.15.0",
+    "keycloak-connect": "^15.1.1",
     "nest-keycloak-connect": "^1.8.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",

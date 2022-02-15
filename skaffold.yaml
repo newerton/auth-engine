@@ -3,22 +3,14 @@ kind: Config
 metadata:
   name: dev-k8s-auth-engine
 build:
-  # local:
-  #   push: false
+  local:
+    push: false
   artifacts:
     - image: newerton/auth-engine
       context: .
       docker:
-        dockerfile: Dockerfile.prod
+        dockerfile: Dockerfile
       sync:
         manual:
-          - src: 'src/**/*.*'
+          - src: "src/**/*.*"
             dest: .
-deploy:
-  # kubeContext: docker-desktop
-  kubectl:
-    flags:
-      global: [--namespace=nestjs-k8s-namespace]
-    manifests:
-      - ./k8s/01-secrets.yaml
-      - ./k8s/02-app.yaml

@@ -13,9 +13,9 @@ export class CredentialsService {
     private configService: ConfigService,
   ) {}
 
-  baseUrl = this.configService.get<string>('keycloak.baseUrl');
+  baseInternalUrl = this.configService.get<string>('keycloak.baseInternalUrl');
   realm = this.configService.get<string>('keycloak.realm');
-  url = `${this.baseUrl}/realms/${this.realm}/protocol/openid-connect/token`;
+  url = `${this.baseInternalUrl}/realms/${this.realm}/protocol/openid-connect/token`;
   headers = {
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
   };
