@@ -1,10 +1,11 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { lastValueFrom } from 'rxjs';
 import { Headers } from 'src/types/headers.types';
 import { HttpService } from '@nestjs/axios';
 import { User } from 'src/types/user.type';
 import { CredentialsService } from 'src/services/credentials.service';
+import { UnauthorizedException } from 'src/app.exceptions';
 
 @Injectable()
 export class AdminUserUpdateService {
@@ -34,8 +35,6 @@ export class AdminUserUpdateService {
         });
     }
 
-    throw new UnauthorizedException({
-      error: 'Access token invalid',
-    });
+    throw new UnauthorizedException('Access token invalid');
   }
 }

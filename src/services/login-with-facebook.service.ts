@@ -1,5 +1,4 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { BadRequestException } from 'src/app.exceptions';
 import { lastValueFrom } from 'rxjs';
 import { LoginWithProvidersDto } from 'src/dto/login-with-providers.dto';
@@ -73,14 +72,12 @@ export class LoginWithFacebookService {
         });
       }
 
-      throw new BadRequestException({
-        error: 'Não foi possível criar a autenticação do facebook',
-      });
+      throw new BadRequestException(
+        'Não foi possível criar a autenticação do facebook',
+      );
     }
 
-    throw new BadRequestException({
-      error: 'Access token invalid',
-    });
+    throw new BadRequestException('Access token invalid');
   }
 
   async getUser(email) {
@@ -140,9 +137,7 @@ export class LoginWithFacebookService {
       });
     } catch (err) {
       console.log(err);
-      throw new BadRequestException({
-        error: 'Não foi possível criar o seu cadastro',
-      });
+      throw new BadRequestException('Não foi possível criar o seu cadastro');
     }
   }
 
@@ -169,9 +164,9 @@ export class LoginWithFacebookService {
         token: accessToken,
       });
     } catch (err) {
-      throw new BadRequestException({
-        error: 'Não foi possível atualizar o seu cadastro',
-      });
+      throw new BadRequestException(
+        'Não foi possível atualizar o seu cadastro',
+      );
     }
   }
 }

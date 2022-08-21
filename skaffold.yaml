@@ -1,7 +1,7 @@
 apiVersion: skaffold/v1
 kind: Config
 metadata:
-  name: dev-k8s-auth-engine
+  name: mktplace-develop-auth-engine
 build:
   local:
     push: false
