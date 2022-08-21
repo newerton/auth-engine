@@ -1,5 +1,4 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { BadRequestException } from 'src/app.exceptions';
 import { lastValueFrom } from 'rxjs';
 import { LoginWithProvidersDto } from 'src/dto/login-with-providers.dto';
@@ -70,14 +69,12 @@ export class LoginWithGoogleService {
         });
       }
 
-      throw new BadRequestException({
-        error: 'Não foi possível criar a autenticação do google',
-      });
+      throw new BadRequestException(
+        'Não foi possível criar a autenticação do google',
+      );
     }
 
-    throw new BadRequestException({
-      error: 'Access token invalid',
-    });
+    throw new BadRequestException('Access token invalid');
   }
 
   async getUser(email) {
@@ -137,9 +134,7 @@ export class LoginWithGoogleService {
       });
     } catch (err) {
       console.log(err);
-      throw new BadRequestException({
-        error: 'Não foi possível criar o seu cadastro',
-      });
+      throw new BadRequestException('Não foi possível criar o seu cadastro');
     }
   }
 

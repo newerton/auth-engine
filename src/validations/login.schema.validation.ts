@@ -9,6 +9,7 @@ export class LoginSchema implements CreateSchema {
     return Joi.object({
       email: Joi.string()
         .email()
+        .required()
         .lowercase()
         .label('E-mail')
         .error((errors: any) => {
