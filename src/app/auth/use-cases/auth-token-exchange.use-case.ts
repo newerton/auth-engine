@@ -4,9 +4,9 @@ import { ConfigService } from '@nestjs/config';
 import * as qs from 'qs';
 import { lastValueFrom } from 'rxjs';
 
+import { Auth } from '@app/@common/application/schemas';
 import { Code } from '@core/@shared/domain/error/Code';
 import { Exception } from '@core/@shared/domain/exception/Exception';
-import { Auth } from 'src/schemas/auth.schema';
 
 @Injectable()
 export class AuthTokenExchangeUseCase {
@@ -44,12 +44,12 @@ export class AuthTokenExchangeUseCase {
         const errorResponse = e.response;
         if (errorResponse.status === 409) {
           throw Exception.new({
-            code: Code.CONFLICT,
+            code: Code.CONFLICT.code,
             overrideMessage: errorResponse.data.errorMessage,
           });
         }
         throw Exception.new({
-          code: Code.BAD_REQUEST,
+          code: Code.BAD_REQUEST.code,
           overrideMessage: e.response?.data || e.message,
         });
       });

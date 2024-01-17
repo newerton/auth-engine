@@ -2,10 +2,10 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
 
+import { Auth } from '@app/@common/application/schemas';
+import { User } from '@app/@common/application/types';
 import { Code } from '@core/@shared/domain/error/Code';
 import { Exception } from '@core/@shared/domain/exception/Exception';
-import { Auth } from 'src/schemas/auth.schema';
-import { User } from 'src/types/user.type';
 
 import { AuthAdminUserCreateProviderUseCase } from './admin/users/auth-admin-user-create-provider.use-case';
 import { AuthAdminUserUpdateUseCase } from './admin/users/auth-admin-user-update.use-case';
@@ -73,13 +73,13 @@ export class AuthLoginGoogleUseCase {
       }
 
       throw Exception.new({
-        code: Code.BAD_REQUEST,
+        code: Code.BAD_REQUEST.code,
         overrideMessage: 'Não foi possível criar a autenticação do google',
       });
     }
 
     throw Exception.new({
-      code: Code.BAD_REQUEST,
+      code: Code.BAD_REQUEST.code,
       overrideMessage: 'Access token invalid',
     });
   }
@@ -142,7 +142,7 @@ export class AuthLoginGoogleUseCase {
     } catch (err) {
       console.log(err);
       throw Exception.new({
-        code: Code.BAD_REQUEST,
+        code: Code.BAD_REQUEST.code,
         overrideMessage: 'Não foi possível criar o seu cadastro',
       });
     }
@@ -172,7 +172,7 @@ export class AuthLoginGoogleUseCase {
       });
     } catch (err) {
       throw Exception.new({
-        code: Code.BAD_REQUEST,
+        code: Code.BAD_REQUEST.code,
         overrideMessage: err,
       });
     }

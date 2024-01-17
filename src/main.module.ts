@@ -1,10 +1,10 @@
 import { Module, Provider } from '@nestjs/common';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 
-import { RemoteProcedureCallExceptionFilter } from '@app/@common/application/exceptions/filter/rpc-exception.filter';
-import { HttpLoggingInterceptor } from '@app/@common/application/interceptors/http-logging.interceptor';
+import { RemoteProcedureCallExceptionFilter } from '@app/@common/application/exceptions/filter';
+import { HttpLoggingInterceptor } from '@app/@common/application/interceptors';
 import { AuthModule } from '@app/auth/auth.module';
-import { ApiServerConfig } from '@core/@shared/infrastructure/config/env/api-server.config';
+import { ApiServerConfig } from '@core/@shared/infrastructure/config/env';
 
 const providers: Provider[] = [
   {

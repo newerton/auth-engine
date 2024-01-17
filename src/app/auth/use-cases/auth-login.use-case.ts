@@ -5,10 +5,10 @@ import { ClientProxy } from '@nestjs/microservices';
 import * as qs from 'qs';
 import { lastValueFrom } from 'rxjs';
 
+import { Auth } from '@app/@common/application/schemas';
+import { User } from '@app/@common/application/types';
 import { Code } from '@core/@shared/domain/error/Code';
 import { Exception } from '@core/@shared/domain/exception/Exception';
-import { Auth } from 'src/schemas/auth.schema';
-import { User } from 'src/types/user.type';
 
 import { AuthAdminUserUpdateUseCase } from './admin/users/auth-admin-user-update.use-case';
 import { LoginDto } from '../dto/login.dto';
@@ -48,7 +48,7 @@ export class AuthLoginUseCase {
       })
       .catch((e) => {
         throw Exception.new({
-          code: Code.UNAUTHORIZED,
+          code: Code.UNAUTHORIZED.code,
           overrideMessage: e.response?.data?.error_description || e.message,
           data: e.response?.data,
         });

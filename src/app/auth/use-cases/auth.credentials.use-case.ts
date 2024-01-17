@@ -4,9 +4,9 @@ import { ConfigService } from '@nestjs/config';
 import * as qs from 'qs';
 import { lastValueFrom } from 'rxjs';
 
+import { Auth } from '@app/@common/application/schemas';
 import { Code } from '@core/@shared/domain/error/Code';
 import { Exception } from '@core/@shared/domain/exception/Exception';
-import { Auth } from 'src/schemas/auth.schema';
 
 @Injectable()
 export class AuthCredentialsUseCase {
@@ -41,7 +41,7 @@ export class AuthCredentialsUseCase {
       .then((res) => res.data)
       .catch((e) => {
         throw Exception.new({
-          code: Code.UNAUTHORIZED,
+          code: Code.UNAUTHORIZED.code,
           overrideMessage:
             e.response?.data?.error_description ||
             e.response?.data ||

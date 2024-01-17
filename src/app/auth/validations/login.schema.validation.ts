@@ -1,46 +1,31 @@
-import * as JoiBase from 'joi';
+import { z } from 'zod';
 
-import { CreateSchema } from '@app/@common/application/validators/joi/schemas/joi.create-schema.interface';
-import joiMessagesSchema from '@app/@common/application/validators/joi/schemas/joi.messages.schema';
+import { CreateValidationSchema } from '@app/@common/application/validators/zod/schemas';
 
-const Joi = JoiBase;
-
-export class LoginSchema implements CreateSchema {
-  createSchema(): JoiBase.ObjectSchema {
-    return Joi.object({
-      email: Joi.string()
-        .email()
-        .required()
-        .lowercase()
-        .label('E-mail')
-        .error((errors: any) => {
-          errors.forEach((err: any) => {
-            console.log('Validation', err.code, err.local as any);
-          });
-          return errors;
+export class LoginSchema implements CreateValidationSchema {
+  createSchema(): z.ZodSchema {
+    return z.object({
+      email: z
+        .string({
+          description: 'E-mail',
+          invalid_type_error: 'E-mail must be a string',
+          required_error: 'E-mail is required',
         })
-        .messages(joiMessagesSchema),
-      password: Joi.string()
+        .toLowerCase()
+        .email(),
+      password: z
+        .string({
+          description: 'Password',
+          invalid_type_error: 'Password must be a string',
+          required_error: 'Password is required',
+        })
         .min(6)
-        .max(30)
-        .required()
-        .label('Senha')
-        .error((errors: any) => {
-          errors.forEach((err: any) => {
-            console.log('Validation', err.code, err.local as any);
-          });
-          return errors;
-        })
-        .messages(joiMessagesSchema),
-      deviceToken: Joi.string()
-        .label('Device Token')
-        .error((errors: any) => {
-          errors.forEach((err: any) => {
-            console.log('Validation', err.code, err.local as any);
-          });
-          return errors;
-        })
-        .messages(joiMessagesSchema),
+        .max(30),
+      deviceToken: z.string({
+        description: 'Device Token',
+        invalid_type_error: 'Device Token must be a string',
+        required_error: 'Device Token is required',
+      }),
     });
   }
 }

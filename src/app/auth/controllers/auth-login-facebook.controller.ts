@@ -3,12 +3,12 @@ import { UseFilters } from '@nestjs/common/decorators';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 
 import { RemoteProcedureCallExceptionFilter } from '@app/@common/application/exceptions/filter/rpc-exception.filter';
-import { JoiValidationPipe } from '@app/@common/application/pipes/joi-validation.pipe';
-import { Auth } from 'src/schemas/auth.schema';
+import { ZodValidationPipe } from '@app/@common/application/pipes';
+import { Auth } from '@app/@common/application/schemas';
 
-import { LoginWithProvidersDto } from '../dto/login-with-providers.dto';
-import { AuthLoginFacebookUseCase } from '../use-cases/auth-login-facebook.use-case';
-import { LoginWithProvidersSchema } from '../validations/login-with-providers.schema.validation';
+import { LoginWithProvidersDto } from '../dto';
+import { AuthLoginFacebookUseCase } from '../use-cases';
+import { LoginWithProvidersSchema } from '../validations';
 
 @Controller()
 @UseFilters(new RemoteProcedureCallExceptionFilter())
@@ -17,7 +17,7 @@ export class AuthLoginFacebookController {
 
   @MessagePattern('auth.login.facebook')
   async execute(
-    @Payload(new JoiValidationPipe(new LoginWithProvidersSchema()))
+    @Payload(new ZodValidationPipe(new LoginWithProvidersSchema()))
     payload: LoginWithProvidersDto,
   ): Promise<Auth> {
     return this.useCase.execute(payload);

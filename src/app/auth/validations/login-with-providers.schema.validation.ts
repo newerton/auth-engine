@@ -1,21 +1,25 @@
-import * as JoiBase from 'joi';
+import { z } from 'zod';
 
-import { CreateSchema } from '@app/@common/application/validators/joi/schemas/joi.create-schema.interface';
-import joiMessagesSchema from '@app/@common/application/validators/joi/schemas/joi.messages.schema';
+import { CreateValidationSchema } from '@app/@common/application/validators/zod/schemas';
 
-const Joi = JoiBase;
-
-export class LoginWithProvidersSchema implements CreateSchema {
-  createSchema(): JoiBase.ObjectSchema {
-    return Joi.object({
-      accessToken: Joi.string()
-        .required()
-        .label('Access Token')
-        .messages(joiMessagesSchema),
-      idToken: Joi.string().label('ID Token').messages(joiMessagesSchema),
-      deviceToken: Joi.string()
-        .label('Device Token')
-        .messages(joiMessagesSchema),
+export class LoginWithProvidersSchema implements CreateValidationSchema {
+  createSchema(): z.ZodSchema {
+    return z.object({
+      accessToken: z.string({
+        description: 'Access Token',
+        invalid_type_error: 'Access Token must be a string',
+        required_error: 'Access Token is required',
+      }),
+      idToken: z.string({
+        description: 'ID Token',
+        invalid_type_error: 'ID Token must be a string',
+        required_error: 'ID Token is required',
+      }),
+      deviceToken: z.string({
+        description: 'Device Token',
+        invalid_type_error: 'Device Token must be a string',
+        required_error: 'Device Token is required',
+      }),
     });
   }
 }

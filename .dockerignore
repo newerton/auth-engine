@@ -4,9 +4,9 @@
 .dockerignore
 
 # Build dependencies
-dist/
-node_modules/
-coverage/
+/dist
+/node_modules
+/coverage
 
 # Environment (contains sensitive data)
 .env
@@ -14,8 +14,8 @@ coverage/
 *.env*
 
 # Files not required for production
-.history/
-k8s/
+/.history
+/k8s
 .editorconfig
 .idea
 .editorconfig

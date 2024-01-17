@@ -3,7 +3,7 @@ import { UseFilters } from '@nestjs/common/decorators';
 import { MessagePattern } from '@nestjs/microservices';
 
 import { RemoteProcedureCallExceptionFilter } from '@app/@common/application/exceptions/filter/rpc-exception.filter';
-import { Auth } from 'src/schemas/auth.schema';
+import { Auth } from '@app/@common/application/schemas';
 
 import { AuthCredentialsUseCase } from '../use-cases/auth.credentials.use-case';
 

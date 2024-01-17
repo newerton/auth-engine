@@ -3,9 +3,9 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { lastValueFrom } from 'rxjs';
 
+import { Headers } from '@app/@common/application/types';
 import { Code } from '@core/@shared/domain/error/Code';
 import { Exception } from '@core/@shared/domain/exception/Exception';
-import { Headers } from 'src/types/headers.types';
 
 import { AuthCredentialsUseCase } from '../../auth.credentials.use-case';
 
@@ -39,19 +39,19 @@ export class AuthAdminUserCreateProviderUseCase {
           const errorResponse = e.response;
           if (errorResponse.status === 409) {
             throw Exception.new({
-              code: Code.CONFLICT,
+              code: Code.CONFLICT.code,
               overrideMessage: errorResponse.data.errorMessage,
             });
           }
           throw Exception.new({
-            code: Code.BAD_REQUEST,
+            code: Code.BAD_REQUEST.code,
             overrideMessage: e.response.data,
           });
         });
     }
 
     throw Exception.new({
-      code: Code.BAD_REQUEST,
+      code: Code.BAD_REQUEST.code,
       overrideMessage: 'Access token invalid',
     });
   }

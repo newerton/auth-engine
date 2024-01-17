@@ -3,10 +3,9 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { lastValueFrom } from 'rxjs';
 
+import { Headers, User } from '@app/@common/application/types';
 import { Code } from '@core/@shared/domain/error/Code';
 import { Exception } from '@core/@shared/domain/exception/Exception';
-import { Headers } from 'src/types/headers.types';
-import { User } from 'src/types/user.type';
 
 import { AuthCredentialsUseCase } from '../../auth.credentials.use-case';
 
@@ -35,14 +34,14 @@ export class AuthAdminUserUpdateUseCase {
         .then(async (res) => res.data)
         .catch((e) => {
           throw Exception.new({
-            code: Code.UNAUTHORIZED,
+            code: Code.UNAUTHORIZED.code,
             overrideMessage: e.response.data,
           });
         });
     }
 
     throw Exception.new({
-      code: Code.UNAUTHORIZED,
+      code: Code.UNAUTHORIZED.code,
       overrideMessage: 'Access token invalid',
     });
   }

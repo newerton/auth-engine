@@ -25,7 +25,7 @@ export class AuthFacebookProvider {
       return response.data;
     } catch (err) {
       throw Exception.new({
-        code: Code.BAD_REQUEST,
+        code: Code.BAD_REQUEST.code,
         overrideMessage: err.response.data.error,
       });
     }

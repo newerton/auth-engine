@@ -25,8 +25,8 @@ export class RemoteProcedureCallExceptionFilter implements RpcExceptionFilter {
     const tcpContext: TcpContext = host.switchToRpc().getContext();
 
     let errorResponse: CoreApiResponse<unknown> = CoreApiResponse.error(
-      Code.INTERNAL_ERROR.code,
-      Code.INTERNAL_ERROR.error,
+      Code.INTERNAL_SERVER_ERROR.code,
+      Code.INTERNAL_SERVER_ERROR.error,
       error.message,
     );
 
