@@ -6,6 +6,7 @@ import { Auth } from '@app/@common/application/schemas';
 import { User } from '@app/@common/application/types';
 import { Code } from '@core/@shared/domain/error/Code';
 import { Exception } from '@core/@shared/domain/exception/Exception';
+import { ApiServerConfig } from '@core/@shared/infrastructure/config/env';
 
 import { AuthAdminUserCreateProviderUseCase } from './admin/users/auth-admin-user-create-provider.use-case';
 import { AuthAdminUserUpdateUseCase } from './admin/users/auth-admin-user-update.use-case';
@@ -140,7 +141,9 @@ export class AuthLoginGoogleUseCase {
         token: accessToken,
       });
     } catch (err) {
-      console.log(err);
+      if (ApiServerConfig.LOG_ENABLE) {
+        console.error(err);
+      }
       throw Exception.new({
         code: Code.BAD_REQUEST.code,
         overrideMessage: 'Não foi possível criar o seu cadastro',
