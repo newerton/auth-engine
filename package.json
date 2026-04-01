@@ -28,7 +28,7 @@
     "@nestjs/platform-express": "11.1.16",
     "env-var": "7.5.0",
     "kafkajs": "2.2.4",
-    "lightship": "9.0.3",
+    "lightship": "9.0.4",
     "rxjs": "7.8.2",
     "zod": "4.1.5"
   },
