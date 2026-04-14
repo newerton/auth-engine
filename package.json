@@ -24,7 +24,7 @@
     "@nestjs/common": "11.1.17",
     "@nestjs/config": "4.0.3",
     "@nestjs/core": "11.1.18",
-    "@nestjs/microservices": "11.1.6",
+    "@nestjs/microservices": "11.1.19",
     "@nestjs/platform-express": "11.1.16",
     "env-var": "7.5.0",
     "kafkajs": "2.2.4",
