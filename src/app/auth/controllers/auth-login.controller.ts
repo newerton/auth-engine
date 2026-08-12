@@ -1,9 +1,8 @@
-import { Controller, UseFilters } from '@nestjs/common';
-import { MessagePattern, Payload } from '@nestjs/microservices';
-
 import { RemoteProcedureCallExceptionFilter } from '@app/@common/application/exceptions/filter/rpc-exception.filter';
 import { ZodValidationPipe } from '@app/@common/application/pipes';
 import { Auth } from '@app/@common/application/schemas';
+import { Controller, UseFilters } from '@nestjs/common';
+import { MessagePattern, Payload } from '@nestjs/microservices';
 
 import { LoginDto } from '../dto';
 import { AuthLoginUseCase } from '../use-cases';

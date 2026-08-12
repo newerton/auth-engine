@@ -1,17 +1,15 @@
+import { Auth } from '@app/@common/application/schemas';
+import { User } from '@app/@common/application/types';
+import { Code } from '@core/@shared/domain/error/Code';
+import { Exception } from '@core/@shared/domain/exception/Exception';
 import { HttpService } from '@nestjs/axios';
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ClientProxy } from '@nestjs/microservices';
 import * as qs from 'qs';
 import { lastValueFrom } from 'rxjs';
-
-import { Auth } from '@app/@common/application/schemas';
-import { User } from '@app/@common/application/types';
-import { Code } from '@core/@shared/domain/error/Code';
-import { Exception } from '@core/@shared/domain/exception/Exception';
-
-import { AuthAdminUserUpdateUseCase } from './admin/users/auth-admin-user-update.use-case';
 import { LoginDto } from '../dto/login.dto';
+import { AuthAdminUserUpdateUseCase } from './admin/users/auth-admin-user-update.use-case';
 
 @Injectable()
 export class AuthLoginUseCase {
@@ -66,7 +64,7 @@ export class AuthLoginUseCase {
         );
         return user;
       }
-    } catch (err) {
+    } catch (_err) {
       return false;
     }
   }

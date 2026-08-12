@@ -37,8 +37,4 @@ export class KeycloakServerConfig {
   private static envRequiredAsString(key): string {
     return env.get(key).required().asString();
   }
-
-  private static envRequiredAsPortNumber(key): number {
-    return env.get(key).required().asPortNumber();
-  }
 }

@@ -1,20 +1,18 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
-import { lastValueFrom } from 'rxjs';
-
 import { Auth } from '@app/@common/application/schemas';
 import { User } from '@app/@common/application/types';
 import { Code } from '@core/@shared/domain/error/Code';
 import { Exception } from '@core/@shared/domain/exception/Exception';
 import { ApiServerConfig } from '@core/@shared/infrastructure/config/env';
-
-import { AuthAdminUserCreateProviderUseCase } from './admin/users/auth-admin-user-create-provider.use-case';
-import { AuthAdminUserUpdateUseCase } from './admin/users/auth-admin-user-update.use-case';
-import { AuthTokenExchangeUseCase } from './auth-token-exchange.use-case';
-import { AuthCredentialsUseCase } from './auth.credentials.use-case';
+import { Inject, Injectable } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
+import { lastValueFrom } from 'rxjs';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { LoginWithProvidersDto } from '../dto/login-with-providers.dto';
 import { AuthGoogleProvider } from '../providers/Google/provider/auth-google.provider';
+import { AuthAdminUserCreateProviderUseCase } from './admin/users/auth-admin-user-create-provider.use-case';
+import { AuthAdminUserUpdateUseCase } from './admin/users/auth-admin-user-update.use-case';
+import { AuthCredentialsUseCase } from './auth.credentials.use-case';
+import { AuthTokenExchangeUseCase } from './auth-token-exchange.use-case';
 
 @Injectable()
 export class AuthLoginGoogleUseCase {
@@ -96,7 +94,7 @@ export class AuthLoginGoogleUseCase {
         );
         return user;
       }
-    } catch (err) {
+    } catch (_err) {
       return false;
     }
   }

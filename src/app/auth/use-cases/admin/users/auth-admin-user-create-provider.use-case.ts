@@ -1,11 +1,10 @@
+import { Headers } from '@app/@common/application/types';
+import { Code } from '@core/@shared/domain/error/Code';
+import { Exception } from '@core/@shared/domain/exception/Exception';
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { lastValueFrom } from 'rxjs';
-
-import { Headers } from '@app/@common/application/types';
-import { Code } from '@core/@shared/domain/error/Code';
-import { Exception } from '@core/@shared/domain/exception/Exception';
 
 import { AuthCredentialsUseCase } from '../../auth.credentials.use-case';
 

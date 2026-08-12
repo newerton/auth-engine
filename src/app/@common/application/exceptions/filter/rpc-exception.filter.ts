@@ -1,3 +1,10 @@
+import { CoreApiResponse } from '@core/@shared/domain/api/CoreApiResponse';
+import { Code } from '@core/@shared/domain/error/Code';
+import {
+  DefaultExceptionResponse,
+  Exception,
+} from '@core/@shared/domain/exception/Exception';
+import { ApiServerConfig } from '@core/@shared/infrastructure/config/env/api-server.config';
 import {
   ArgumentsHost,
   Catch,
@@ -8,14 +15,6 @@ import {
 } from '@nestjs/common';
 import { TcpContext } from '@nestjs/microservices';
 import { Observable, throwError } from 'rxjs';
-
-import { CoreApiResponse } from '@core/@shared/domain/api/CoreApiResponse';
-import { Code } from '@core/@shared/domain/error/Code';
-import {
-  DefaultExceptionResponse,
-  Exception,
-} from '@core/@shared/domain/exception/Exception';
-import { ApiServerConfig } from '@core/@shared/infrastructure/config/env/api-server.config';
 
 type ErrorParams = Error & DefaultExceptionResponse;
 

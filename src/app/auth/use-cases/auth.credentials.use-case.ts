@@ -1,12 +1,11 @@
+import { Auth } from '@app/@common/application/schemas';
+import { Code } from '@core/@shared/domain/error/Code';
+import { Exception } from '@core/@shared/domain/exception/Exception';
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as qs from 'qs';
 import { lastValueFrom } from 'rxjs';
-
-import { Auth } from '@app/@common/application/schemas';
-import { Code } from '@core/@shared/domain/error/Code';
-import { Exception } from '@core/@shared/domain/exception/Exception';
 
 @Injectable()
 export class AuthCredentialsUseCase {
